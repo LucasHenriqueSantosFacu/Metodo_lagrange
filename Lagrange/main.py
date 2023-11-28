@@ -1,37 +1,46 @@
-def formula_de_lagrange(x, y):
+def formula_de_lagrange(x_valores, y_valores):
+    # Lista para armazenar os termos do polinômio interpolador
     resultado = []
 
-    for i in range(len(x)):
-        term_num = [str(y[i])]
-        term_denom = ["1.0"]
+    # Itera sobre cada ponto conhecido
+    for i in range(len(x_valores)):
+        # Numerador do termo de Lagrange
+        termo_numerador = [str(y_valores[i])]
+        # Denominador do termo de Lagrange
+        termo_denominador = ["1.0"]
 
-        for j in range(len(x)):
+        # Itera sobre todos os pontos conhecidos novamente para construir os termos
+        for j in range(len(x_valores)):
             if j != i:
-                term_num.append(f" * (x - {x[j]})")
-                term_denom.append(f" * ({x[i]} - {x[j]})")
+                # Adiciona parte do termo numerador
+                termo_numerador.append(f" * (x - {x_valores[j]})")
+                # Adiciona parte do termo denominador
+                termo_denominador.append(f" * ({x_valores[i]} - {x_valores[j]})")
 
-        resultado.append(" * ".join(term_num) + " / " + " * ".join(term_denom))
+        # Combina as partes para formar o termo completo de Lagrange
+        resultado.append(" * ".join(termo_numerador) + " / " + " * ".join(termo_denominador))
 
+    # Combina todos os termos para formar o polinômio interpolador final
     return " + ".join(resultado)
 
 
 def main():
-    # Infos para o user
-    n = int(input("Digite o número de pontos conhecidos (por exemplo: se tiver 3 combinações de x e y, digite 3): "))
-    x = []
-    y = []
+    # Informações para o usuário
+    numero_de_pontos = int(input("Digite o número de pontos conhecidos (por exemplo: se tiver 3 combinações de x e y, digite 3): "))
+    x_valores = []
+    y_valores = []
 
     print("Digite os pontos conhecidos (x, f(x), ou seja, y):")
-    for i in range(n):
+    for i in range(numero_de_pontos):
         ponto = input(f"Ponto {i + 1}: ").split()
-        x.append(float(ponto[0]))
-        y.append(float(ponto[1]))
+        x_valores.append(float(ponto[0]))
+        y_valores.append(float(ponto[1]))
 
-    # Calcular o polinômio interpolador
-    polinomio_interpolador = formula_de_lagrange(x, y)
+    # Calcular o polinômio interpolador usando a fórmula de Lagrange
+    polinomio_interpolador = formula_de_lagrange(x_valores, y_valores)
 
-    # Finalizar mostrando resultado
-    print("\nGrau do Polinômio:", n - 1)
+    # Exibe o resultado final
+    print("\nGrau do Polinômio:", numero_de_pontos - 1)
     print("Polinômio Interpolador:", polinomio_interpolador)
 
 
