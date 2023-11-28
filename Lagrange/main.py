@@ -1,48 +1,38 @@
-def formula_de_lagrange(x_valores, y_valores):
-    # Lista para armazenar os termos do polinômio interpolador
-    resultado = []
+def interpolacao_lagrange(x_valores, y_valores):
+    # Define um polinômio base para um índice i dado
+    def termo_base(i):
+        def termo(x):
+            resultado = 1
+            for j in range(len(x_valores)):
+                if j != i:
+                    resultado *= (x - x_valores[j]) / (x_valores[i] - x_valores[j])
+            return resultado
 
-    # Itera sobre cada ponto conhecido
+        return termo
+
+    # Define o polinômio interpolador de Lagrange
+    polinomio_interpolador = lambda x: sum(y_valores[i] * termo_base(i)(x) for i in range(len(x_valores)))
+
+    # Constrói a expressão simplificada do polinômio interpolador de Lagrange
+    expressao_simplificada = ""
     for i in range(len(x_valores)):
-        # Numerador do termo de Lagrange
-        termo_numerador = [str(y_valores[i])]
-        # Denominador do termo de Lagrange
-        termo_denominador = ["1.0"]
-
-        # Itera sobre todos os pontos conhecidos novamente para construir os termos
+        termo_str = f"{y_valores[i]} * "
         for j in range(len(x_valores)):
             if j != i:
-                # Adiciona parte do termo numerador
-                termo_numerador.append(f" * (x - {x_valores[j]})")
-                # Adiciona parte do termo denominador
-                termo_denominador.append(f" * ({x_valores[i]} - {x_valores[j]})")
+                termo_str += f"(x - {x_valores[j]}) / ({x_valores[i]} - {x_valores[j]}) * "
+        expressao_simplificada += termo_str[:-2] + " + "
 
-        # Combina as partes para formar o termo completo de Lagrange
-        resultado.append(" * ".join(termo_numerador) + " / " + " * ".join(termo_denominador))
+    expressao_simplificada = expressao_simplificada[:-2]  # Remove o último "+"
 
-    # Combina todos os termos para formar o polinômio interpolador final
-    return " + ".join(resultado)
+    return expressao_simplificada
 
+# Valores de exemplo para a interpolação
+valores_x_exemplo = [-2, 0, 2, 3]
+valores_y_exemplo = [5, -2, 3, 6]
 
-def main():
-    # Informações para o usuário
-    numero_de_pontos = int(input("Digite o número de pontos conhecidos (por exemplo: se tiver 3 combinações de x e y, digite 3): "))
-    x_valores = []
-    y_valores = []
+# Obtém a expressão simplificada do polinômio interpolador de Lagrange
+expressao_simplificada = interpolacao_lagrange(valores_x_exemplo, valores_y_exemplo)
 
-    print("Digite os pontos conhecidos (x, f(x), ou seja, y):")
-    for i in range(numero_de_pontos):
-        ponto = input(f"Ponto {i + 1}: ").split()
-        x_valores.append(float(ponto[0]))
-        y_valores.append(float(ponto[1]))
-
-    # Calcular o polinômio interpolador usando a fórmula de Lagrange
-    polinomio_interpolador = formula_de_lagrange(x_valores, y_valores)
-
-    # Exibe o resultado final
-    print("\nGrau do Polinômio:", numero_de_pontos - 1)
-    print("Polinômio Interpolador:", polinomio_interpolador)
-
-
-if __name__ == "__main__":
-    main()
+# Imprime a expressão simplificada do polinômio interpolador de Lagrange em x
+print("Expressão Simplificada do Polinômio Interpolador de Lagrange em x:")
+print(expressao_simplificada)
